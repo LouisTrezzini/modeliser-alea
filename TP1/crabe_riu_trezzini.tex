@@ -29,5 +29,83 @@
 
 \maketitle
 
+\setcounter{section}{1}
+\section{Crabes de Waldon}
 
+\paragraph*{Question $1.$} On visualise l'histogramme des données ainsi que la gaussienne la plus proche afin d'évaluer si les données suivent une loi normale.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/figure1.eps}
+	\caption{Loi empirique des données et gaussienne la plus proche.}
+\end{figure}
+
+Il y a un décallage entre la courbe théorique et les données empiriques, la loi normale n'explique pas bien les données.
+
+\textit{Question subsidiaire $1.$} Lorsqu'on applique un test du $\chi^2$ aux données pour tester la normalité des données, le test est négatif : une loi normale ne permet pas d'expliquer les données.
+
+\paragraph*{Question $2.$}
+
+\paragraph*{Question $3.$} L'application de l'algorithme EM renvoie la courbe suivante :
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/figure2.eps}
+	\caption{Loi empirique des données et les gaussiennes calculées par l'algorithme EM.}
+\end{figure}
+
+On remarque que la courbe en cyan suit bien les données empiriques, cette loi semble donc plus adéquate que la première proposition.
+
+\textit{Question subsidiaire $2.$} 
+
+\section{Recherche de zones homogènes dans l'\textsc{ADN}}
+
+\paragraph*{Question $4.$} On applique le calcul aux données restreinte avec les données initiales suivantes :
+
+\begin{align*}
+a &= \begin{pmatrix}
+0.99 & 0.01 \\
+0.03 & 0.97
+\end{pmatrix} \\
+b &= \begin{pmatrix}
+0.2697410 & 0.2084444 & 0.1983422 & 0.3234723 \\
+0.2463460 & 0.2475527 & 0.2982972 & 0.2078041
+\end{pmatrix}\\
+\pi_0 &= \begin{pmatrix}
+0.5 \\
+0.5
+\end{pmatrix} \\
+\end{align*}
+
+On obtient alors les résultats finaux suivant :
+
+\begin{align*}
+a &= \begin{pmatrix}
+0.9977068 & 0.0022932 \\
+0 		  & 1
+\end{pmatrix} \\
+b &= \begin{pmatrix}
+0.2576651 & 0.203861  & 0.2155776 & 0.3228962 \\  
+0.1938853 & 0.2570135 & 0.3833224 & 0.1657789
+\end{pmatrix}\\
+\end{align*}
+
+On observe alors les régions codantes et non-codantes :
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/figure3.eps}
+	\caption{Les zone homogènes de la séquence d'\textsc{ADN}.}
+\end{figure}
+
+Les matrices $a$ et $b$ évoluent comme suit :
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.45\textwidth]{images/figure4.eps}
+	\includegraphics[width=0.45\textwidth]{images/figure5.eps}
+	\caption{Évolution en échelle log-log des coefficients de la matrice $a$ (à gauche) et de la matrice $b$ (à droite).}
+\end{figure}
+
+On remarque une convergence relativement rapide de l'algorithme, comme attendu d'après les résultats du livre \emph{Modèles aléatoires} de J.-F. Delmas et B. Jourdain.
 \end{document}
