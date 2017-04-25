@@ -36,7 +36,7 @@
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.95\textwidth]{images/figure1.eps}
+	\includegraphics[width=0.95\textwidth]{images/figure0.eps}
 	\caption{Loi empirique des données et gaussienne la plus proche.}
 \end{figure}
 
@@ -50,17 +50,25 @@ Il y a un décallage entre la courbe théorique et les données empiriques, la l
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.95\textwidth]{images/figure2.eps}
+	\includegraphics[width=0.95\textwidth]{images/figure1.eps}
 	\caption{Loi empirique des données et les gaussiennes calculées par l'algorithme EM.}
 \end{figure}
 
 On remarque que la courbe en cyan suit bien les données empiriques, cette loi semble donc plus adéquate que la première proposition.
 
-\textit{Question subsidiaire $2.$} 
+\textit{Question subsidiaire $2.$} On obtient dans le cas de $3$ populations le résultat suivant :
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/figure2.eps}
+	\caption{Loi empirique des données et les gaussiennes calculées par l'algorithme EM.}
+\end{figure}
+
+On observe que les crabes de faibles tailles font partis d'une population à part.
 
 \section{Recherche de zones homogènes dans l'\textsc{ADN}}
 
-\paragraph*{Question $4.$} On applique le calcul aux données restreinte avec les données initiales suivantes :
+\paragraph*{Question $4.$} On applique le calcul aux données restreintes avec les données initiales suivantes :
 
 \begin{align*}
 a &= \begin{pmatrix}
@@ -102,10 +110,26 @@ Les matrices $a$ et $b$ évoluent comme suit :
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.45\textwidth]{images/figure4.eps}
-	\includegraphics[width=0.45\textwidth]{images/figure5.eps}
-	\caption{Évolution en échelle log-log des coefficients de la matrice $a$ (à gauche) et de la matrice $b$ (à droite).}
+	\includegraphics[width=0.95\textwidth]{images/figure4.eps}\\
+	\includegraphics[width=0.95\textwidth]{images/figure5.eps}
+	\caption{Évolution en échelle log-log des coefficients de la matrice $a$ (en haut) et de la matrice $b$ (en bas).}
 \end{figure}
 
 On remarque une convergence relativement rapide de l'algorithme, comme attendu d'après les résultats du livre \emph{Modèles aléatoires} de J.-F. Delmas et B. Jourdain.
+
+Les données restreintes donnant des résultats satisfaisants, on observe le résultat sur la chaine complète :
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/figure6.eps}
+	\caption{Les zone homogènes de la séquence d'\textsc{ADN}.}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{images/figure7.eps} \\
+	\includegraphics[width=0.95\textwidth]{images/figure8.eps}
+	\caption{Évolution en échelle log-log des coefficients de la matrice $a$ (en haut) et de la matrice $b$ (en bas).}
+\end{figure}
+
+En comparant aux résultat de la page $159$ on conclue que le résultat est satisfaisant.
 \end{document}

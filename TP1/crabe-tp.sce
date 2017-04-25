@@ -45,10 +45,19 @@ alpha = test_chi2(crabe, normale(crabe, mean(crabe), stdev(crabe)^2))
 // Données
 Npop = 3;
 
-pi0=[1; 3; 2]/2/2;
-pi=pi0;
-mu=[.57; .67; 0.6];
-s2=[1; 1; 1]/10000;
+if Npop == 3 then
+    pi0=[1; 3; 2]/2/2;
+    pi=pi0;
+    mu=[.57; .67; .48];
+    s2=[1; 1; 1]/10000;
+end
+if Npop == 2 then
+    pi0=[1; 3]/2/2;
+    pi=pi0;
+    mu=[.57; .67];
+    s2=[1; 1]/10000;
+end
+
 
 rho=ones(Npop, 1000);
 
