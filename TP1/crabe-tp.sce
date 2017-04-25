@@ -34,34 +34,43 @@ for index= 1:29 - 1
 end
 
 // Dessiner la loi normale correspondante
-
+X = linspace(0.58, 0.7);
 histplot(y, crabe);
 
-crabeNormal = normale(y, mean(crabe), stdev(crabe)^2);
-plot(y, crabeNormal, 'r');
+crabeNormal = normale(X, mean(crabe), stdev(crabe)^2);
+plot(X, crabeNormal, 'r');
 
 alpha = test_chi2(crabe, normale(crabe, mean(crabe), stdev(crabe)^2))
 
 // Données
-pi0=[1; 3]/2/2;
-pi=pi0;
-mu=[.57; .67];
-s2=[1 ;1]/10000;
+Npop = 3;
 
-rho=ones(2,1000);
+pi0=[1; 3; 2]/2/2;
+pi=pi0;
+mu=[.57; .67; 0.6];
+s2=[1; 1; 1]/10000;
+
+rho=ones(Npop, 1000);
 
 // Algorithme EM pour les crabes
 //------------------------------
 
 N=1000;
 iterMax = 1000;
-R=zeros(iterMax+1, 5);
-R(1, :) = [mu(1); mu(2); pi(1); s2(1); s2(2)]';
+R=zeros(iterMax + 1, 3 * Npop);
+R(1, :) = [mu; pi; s2]';
 
 for iter=1:iterMax
-    rho_p = zeros(2, N);
-    rho_p(1, :) = (pi(1) * normale(crabe, mu(1), s2(1)) ./ (pi(1) * normale(crabe, mu(1), s2(1)) + pi(2) * normale(crabe, mu(2), s2(2))))';
-    rho_p(2, :) = (pi(2) * normale(crabe, mu(2), s2(2)) ./ (pi(1) * normale(crabe, mu(1), s2(1)) + pi(2) * normale(crabe, mu(2), s2(2))))';
+    rho_p = zeros(Npop, N);
+
+    for k = 1:Npop
+        rho_p(k, :) = (pi(k) * normale(crabe, mu(k), s2(k)))';
+    end
+
+    norme = sum(rho_p, 'r');
+    for k = 1:Npop
+        rho_p(k, :) = rho_p(k, :) ./ norme;
+    end
 
     // Etape E
     pi_star = mean(rho_p, 'c');
@@ -73,12 +82,13 @@ for iter=1:iterMax
 
     // Etape M
     mu_star = rho_p * crabe ./ sum(rho_p, 'c');
-    crabe_mean = zeros(N, 2);
-    crabe_mean(:, 1) = crabe - mu_star(1);
-    crabe_mean(:, 2) = crabe - mu_star(2);
+    crabe_mean = zeros(N, Npop);
+    for k = 1:Npop
+        crabe_mean(:, k) = crabe - mu_star(k);
+    end
     s2_star = sum(rho_p .* (crabe_mean .^ 2)', 'c') ./ sum(rho_p, 'c');
 
-    R(iter + 1, :) = [mu_star(1); mu_star(2); pi_star(1); s2_star(1); s2_star(2)]';
+    R(iter + 1, :) = [mu_star; pi_star; s2_star]';
     mu = mu_star;
     pi = pi_star;
     s2 = s2_star;
@@ -87,8 +97,8 @@ end
 // Affichages
 f = scf();
 histplot(y, crabe);
-crabeNormal1 = pi(1) * normale(y, mu(1), s2(1));
-crabeNormal2 = pi(2) * normale(y, mu(2), s2(2));
-plot(y, crabeNormal1, 'r');
-plot(y, crabeNormal2, 'g');
-plot(y, crabeNormal1 + crabeNormal2, 'c');
+crabe_normal = zeros(Npop, size(X, 2));
+for k = 1:Npop
+    crabe_normal(k, :) = pi(k) * normale(X, mu(k), s2(k));
+end
+plot(X, [sum(crabe_normal, 'r'); crabe_normal]');
