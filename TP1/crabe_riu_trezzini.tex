@@ -40,11 +40,11 @@
 	\caption{Loi empirique des données et gaussienne la plus proche.}
 \end{figure}
 
-Il y a un décallage entre la courbe théorique et les données empiriques, la loi normale n'explique pas bien les données.
+Il y a un décalage entre la courbe théorique et les données empiriques, la loi normale n'explique pas bien les données.
 
 \textit{Question subsidiaire $1.$} Lorsqu'on applique un test du $\chi^2$ aux données pour tester la normalité des données, le test est négatif : une loi normale ne permet pas d'expliquer les données.
 
-\paragraph*{Question $2.$}
+\paragraph*{Question $2.$} La lecture attentive de la page 154 et du lemme 5.2.8 permet de se convaincre du résultat demandé.
 
 \paragraph*{Question $3.$} L'application de l'algorithme EM renvoie la courbe suivante :
 
@@ -64,7 +64,7 @@ On remarque que la courbe en cyan suit bien les données empiriques, cette loi s
 	\caption{Loi empirique des données et les gaussiennes calculées par l'algorithme EM.}
 \end{figure}
 
-On observe que les crabes de faibles tailles font partis d'une population à part.
+On observe que les crabes de faibles tailles peuvent faire partie d'une population à part, mais cela ressemble aussi fortement à du "sur-apprentissage" : ce léger défaut dans la courbe peut provenir d'erreurs de mesure et ne pas être significatif relativement aux deux autres bosses.
 
 \section{Recherche de zones homogènes dans l'\textsc{ADN}}
 
@@ -93,7 +93,7 @@ a &= \begin{pmatrix}
 0 		  & 1
 \end{pmatrix} \\
 b &= \begin{pmatrix}
-0.2576651 & 0.203861  & 0.2155776 & 0.3228962 \\  
+0.2576651 & 0.203861  & 0.2155776 & 0.3228962 \\
 0.1938853 & 0.2570135 & 0.3833224 & 0.1657789
 \end{pmatrix}\\
 \end{align*}
@@ -126,10 +126,10 @@ Les données restreintes donnant des résultats satisfaisants, on observe le ré
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.95\textwidth]{images/figure7.eps} \\
-	\includegraphics[width=0.95\textwidth]{images/figure8.eps}
+	\includegraphics[width=0.9\textwidth]{images/figure7.eps} \\
+	\includegraphics[width=0.9\textwidth]{images/figure8.eps}
 	\caption{Évolution en échelle log-log des coefficients de la matrice $a$ (en haut) et de la matrice $b$ (en bas).}
 \end{figure}
 
-En comparant aux résultat de la page $159$ on conclue que le résultat est satisfaisant.
+En comparant aux résultats de la page 159 on conclut que le résultat est satisfaisant.
 \end{document}
