@@ -1,0 +1,67 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{courier}
+\usepackage{amsfonts}
+\usepackage{stmaryrd}
+\usepackage{diagbox}
+\usepackage{mathtools}
+
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\lstset{framextopmargin=50pt,frame=bottomline}
+\lstset{language=Scilab}
+
+\usepackage{float}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\title{\textbf{TP3 “MODÉLISER L’ALÉA” \\ Page Rank}}
+\author{Clément Riu - Louis Trezzini}
+\date{\today}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newtheorem{lemme}{Lemme}
+
+\begin{document}
+
+\maketitle
+
+\section{Une chaîne de Markov}
+
+\paragraph*{Question 1.} La chaîne de Markov $(X_n)_{n \in \N}$ de matrice de transition $P$ va suivre le graphe des pages web, et lorsqu'elle arrive sur une page qui ne redirige vers aucune autre, elle se téléporte sur une autre page quelconque. De plus, il existe une probabilité non-nulle (car $\forall i \in \N, \ z_i > 0$) que la chaîne se téléporte même si la page possède des liens sortant.
+
+Le vecteur $z$ est appelé vecteur de téléportation pour car lorsque la chaîne est sur une page $i$ il y a une probabilité proportionnelle à $z_j$ de passer directement à la page $j$.
+
+\section{Calcul du PageRank des états de la chaîne}
+
+\paragraph*{Question 2.} Grâce au vecteur de téléportation $z$, la chaîne de Markov $(X_n)_{n \in \N}$ est irréductible (encore une fois parce que $\forall i \in \N, \ z_i > 0$. De plus, ayant valeur dans un espace d'état fini, la chaîne de Markov est positive récurrente et il existe une unique probabilité invariante $\pi$.
+
+\paragraph*{Question 3.} On a :
+
+\begin{align*}
+	P &= \alpha P_1 + (1 - \alpha) e z \\
+	\text{o\`u } P_1 &= P_{ss} + dz \\
+	\text{donc } P &= \alpha P_{ss} + \alpha (d - e) z + e z
+\end{align*}
+
+On peut alors décomposer le calcul comme suit :
+
+\begin{align*}
+	P^T \cdot x &= \alpha P_{ss}^T \cdot x + \alpha \left( \left(d - e\right) \cdot z \right)^T \cdot x + (e \cdot z)^T \cdot x \\
+		P^T \cdot x &= \alpha P_{ss}^T \cdot x + \alpha z^T \cdot (d - e)^T \cdot x + z^T \cdot e^T \cdot x \\
+\end{align*}
+
+\end{document}
