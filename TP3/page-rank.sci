@@ -62,8 +62,9 @@ y2 = alpha * Pss' * x + z' * (dz * x);
 
 disp(y1 - y2);
 
-disp("== Question 4 == TODO");
+disp("== Question 4 == FIXME");
 
+// pi^T est un vecteur propre de P^T associé à la valeur propre 1
 [R, diagevals]=spec(P');
 I = find(abs(diag(diagevals) - 1) < 1.e-7);
 pi = real(R(:, I))';
@@ -75,7 +76,7 @@ disp(clean(pi * P - pi));
 
 disp("== Question 5 ==");
 
-function [pi]=pi_iterative()
+function [pi]=pi_iterative(P)
   p = ones(n, 1);
   while %t
     pn = P' * p;
@@ -86,14 +87,15 @@ function [pi]=pi_iterative()
   pi = pi / sum(pi);
 endfunction
 
-pi = pi_iterative();
+pi = pi_iterative(P);
 disp(clean(pi * P - pi));
 
-disp("== Question 6 ==");
+disp("== Question 6 == FIXME");
 
-function [pi]=pi_iterative_sparse()
+function [pi]=pi_iterative_sparse(Pss, d, z, alpha)
   p = ones(n, 1);
   while %t
+    dz = (d + (1 - alpha) * (1 - d))';
     pn = alpha * Pss' * p + z' * (dz * p);
     if norm(pn - p, %inf) < 10 * %eps then break; end
     p = pn;
@@ -102,12 +104,12 @@ function [pi]=pi_iterative_sparse()
   pi = pi / sum(pi);
 endfunction
 
-pi = pi_iterative_sparse();
-clean(pi * P - pi)
+pi = pi_iterative_sparse(Pss, d, z, alpha);
+disp(clean(pi * P - pi));
 
 disp("===== Partie 3 =====");
 
-disp("== Question 7 ==");
+disp("== Question 7 == TODO");
 
 m = n / 2;
 
@@ -138,8 +140,9 @@ for k = 1:ncont
     control2 = controls(j,:);
     Adjc=Adj;
     Adjc(1:2, m + 1:$) = [control1 ; control2];
-    [P,Pss,d,z] = google(Adjc);
-    pi = pi_iterative_sparse();
+    [P,Pss,d,z,alpha] = google(Adjc);
+    // pi = pi_iterative_sparse(Pss, d, z, alpha);
+    pi = pi_iterative(P);
     cost = sum(pi(1:m));
     if cost > costopt then
         Adjopt=Adjc;
@@ -166,25 +169,27 @@ P = rand(n, n)
 pr = sum(P,'c');
 P = P ./ (pr * ones(1, n));
 
+disp(P);
+
 // on suppose ici que les etats de la chaine sont 1:n
 
 disp("== Question 8 ==");
 
 function cerg=ergodique_markov_T(T,P)
-  R = r((1:n)');
   Pk = eye(n,n);
-  cerg = R;
+  couts = r((1:n)');
+  cerg = couts;
   for i = 1:T
     Pk = P * Pk;
-    cerg = cerg + Pk * R;
+    cerg = cerg + Pk * couts;
   end
   cerg = cerg / T;
 endfunction
 
 function [cerg,pi]=ergodique_markov(P)
-  pi = pi_iterative_sparse();
-  R = r((1:n)');
-  cerg = pi * R;
+  pi = pi_iterative(P);
+  couts = r((1:n)');
+  cerg = pi * couts;
 endfunction
 
 // test
@@ -193,28 +198,35 @@ T=100000; CT = ergodique_markov_T(T,P);
 
 disp(c - CT);
 
-// Le noyau de P-I est engendr� par ones(n,1)
+// Le noyau de P-I est engendré par ones(n,1)
 [x0,K]=linsolve(P - eye(n,n), zeros(n,1));
+
+disp("== Question 9 ==");
 
 // le projecteur spectral sur Espace propre associé a 1
 Pr = ones(n,1) * pi; // [pi;pi;pi;....]
 A = P - eye(n,n);    // A -Id
 S = Pr - inv(Pr - A);
-// v�rifier que S*Pr et Pr*S sont nuls
+// vérifier que S*Pr et Pr*S sont nuls
+disp("S * Pr");
 disp(clean(S*Pr));
+disp("Pr * S");
 disp(clean(Pr*S));
 // A*w  + R - c= 0
 // A*c         = 0
 R = r((1:n)');
+// vérifions que w=-S*R et c=Pr*R sont solution du systeme linaire
 w = -S * R;
 c = Pr * R;
-// vérifions que w=-S*R et c=Pr*R sont solution du systeme linaire
-disp(A*w + R -c);
-disp(A*c);
+disp("A * w + R - c");
+disp(A * w + R - c);
+disp("A * c");
+disp(A * c);
 // Noter que w n’est pas unique, on peut rajouter à w les elts du noyau de A
 
-// Montrons inversement que c doit ^etre egal `a Pr*R
+// Montrons inversement que c doit être egal à Pr*R
 // Pr*A est nul
+disp("Pr * A");
 disp(Pr * A);
 // on doit donc avoir
 // Pr*R - Pr*c = 0 et A*c =0
@@ -230,7 +242,7 @@ disp(clean(S*Pr));
 [x0,K]=linsolve([A,-eye(n,n);zeros(n,n),A],[R;zeros(n,1)]);
 // on vérifie bien que e = Pr*R
 
-P1 = rand(n,n)
+P1 = rand(n,n);
 pr = sum(P1,'c');
 P1 = P1 ./ (pr * ones(1, n));
 
@@ -241,37 +253,44 @@ alpha = 0.8;
 
 P = alpha * P1 + (1 - alpha) * ones(n, 1) * z;
 
-// les couts R(i,j)
-R = grand(n,n,'unf',0,1);
+// les couts Rm(i,j)
+Rm = grand(n,n,'unf',0,1);
 
-// On cherche un point fixe de Tbar
-// w = alpha*P1*w + P.*R
+disp("== Question 10 ==");
 
-w = inv(eye(n,n) - alpha*P1)*(sum(P.*R,'c'))
+// On le vérifie numeriquement
+// trouver la solution de
+// w = alpha*P1*w + sum(P.*Rm,'c')
+
+w = inv(eye(n, n) - alpha * P1) * (sum(P .* Rm, 'c'))
 
 // calcul de c
 c = (1-alpha)*z*w
 
 // (w,c) solution du pb ergodique ?
 
-w + c - (P*w + sum(P.*R,'c'))
+disp("w + c - (P*w + sum(P.*R,'c'))");
+disp(w + c - (P*w + sum(P.*R,'c')));
 
-// Maintenant on peut utiliser une m�thode it�rative
+// Maintenant on peut utiliser une méthode itérative
+
+disp("== Question 11 ==");
 
 function w=iterative_c(tol)
-  R1=sum(P.*R,'c');
-  w=ones(n,1);
+  b = sum(P .* R, 'c');
+  w = ones(n, 1);
   while %t
-    wn = alpha*P1*w + R1
-    if norm(wn-w) < tol then break;end
-    w=wn;
+    wn = alpha * P1 * w + b
+    if norm(wn - w) < tol then break;end
+    w = wn;
   end
 endfunction
 
-w=iterative_c(10*%eps);
+w = iterative_c(10 * %eps);
 // calcul de c
-c = (1-alpha)*z*w
+c = (1 - alpha) * z * w
 
 // (w,c) solution du pb ergodique ?
 
-w + c - (P*w + sum(P.*R,'c'))
+disp("w + c - (P*w + sum(P.*R,'c'))");
+disp(w + c - (P*w + sum(P.*R,'c')));
