@@ -53,14 +53,14 @@ endfunction
 
 disp(sum(P,'c'));
 
-disp("== Question 3 == TODO");
+disp("== Question 3 ==");
 
-dz = (d + (1 - alpha) * (1 - d))';
+w = (alpha * (d - ones(n, 1)) + ones(n, 1))';
 x = rand(n, 1)
 y1 = P' * x;
-y2 = alpha * Pss' * x + z' * (dz * x);
+y2 = alpha * Pss' * x + z' * (w * x);
 
-disp(y1 - y2);
+disp(clean(y1 - y2));
 
 disp("== Question 4 == FIXME");
 
@@ -90,13 +90,13 @@ endfunction
 pi = pi_iterative(P);
 disp(clean(pi * P - pi));
 
-disp("== Question 6 == FIXME");
+disp("== Question 6 ==");
 
 function [pi]=pi_iterative_sparse(Pss, d, z, alpha)
   p = ones(n, 1);
   while %t
-    dz = (d + (1 - alpha) * (1 - d))';
-    pn = alpha * Pss' * p + z' * (dz * p);
+    w = (alpha * (d - ones(n, 1)) + ones(n, 1))';
+    pn = alpha * Pss' * p + z' * (w * p);
     if norm(pn - p, %inf) < 10 * %eps then break; end
     p = pn;
   end
@@ -178,7 +178,7 @@ disp("== Question 8 ==");
 function cerg=ergodique_markov_T(T,P)
   Pk = eye(n,n);
   couts = r((1:n)');
-  cerg = couts;
+  cerg = Pk * couts;
   for i = 1:T
     Pk = P * Pk;
     cerg = cerg + Pk * couts;
@@ -196,7 +196,9 @@ endfunction
 T=100000; CT = ergodique_markov_T(T,P);
 [c,pi]=ergodique_markov(P);
 
-disp(c - CT);
+disp(CT);
+disp(c);
+disp((c - CT) / c);
 
 // Le noyau de P-I est engendré par ones(n,1)
 [x0,K]=linsolve(P - eye(n,n), zeros(n,1));
@@ -219,15 +221,15 @@ R = r((1:n)');
 w = -S * R;
 c = Pr * R;
 disp("A * w + R - c");
-disp(A * w + R - c);
+disp(clean(A * w + R - c));
 disp("A * c");
-disp(A * c);
+disp(clean(A * c));
 // Noter que w n’est pas unique, on peut rajouter à w les elts du noyau de A
 
 // Montrons inversement que c doit être egal à Pr*R
 // Pr*A est nul
 disp("Pr * A");
-disp(Pr * A);
+disp(clean(Pr * A));
 // on doit donc avoir
 // Pr*R - Pr*c = 0 et A*c =0
 // en sommant
@@ -262,22 +264,22 @@ disp("== Question 10 ==");
 // trouver la solution de
 // w = alpha*P1*w + sum(P.*Rm,'c')
 
-w = inv(eye(n, n) - alpha * P1) * (sum(P .* Rm, 'c'))
+w = inv(eye(n, n) - alpha * P1) * (sum(P .* Rm, 'c'));
 
 // calcul de c
-c = (1-alpha)*z*w
+c = (1-alpha)*z*w;
 
 // (w,c) solution du pb ergodique ?
 
-disp("w + c - (P*w + sum(P.*R,'c'))");
-disp(w + c - (P*w + sum(P.*R,'c')));
+disp("w + c - (P * w + sum(P .* Rm))");
+disp(w + c - (P * w + sum(P .* Rm,'c')));
 
 // Maintenant on peut utiliser une méthode itérative
 
 disp("== Question 11 ==");
 
 function w=iterative_c(tol)
-  b = sum(P .* R, 'c');
+  b = sum(P .* Rm, 'c');
   w = ones(n, 1);
   while %t
     wn = alpha * P1 * w + b
@@ -292,5 +294,5 @@ c = (1 - alpha) * z * w
 
 // (w,c) solution du pb ergodique ?
 
-disp("w + c - (P*w + sum(P.*R,'c'))");
-disp(w + c - (P*w + sum(P.*R,'c')));
+disp("w + c - (P * w + sum(P .* Rm))");
+disp(w + c - (P * w + sum(P .* Rm,'c')));

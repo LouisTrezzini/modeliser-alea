@@ -15,7 +15,7 @@
 \usepackage{mathtools}
 
 \lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
-\lstset{framextopmargin=50pt,frame=bottomline}
+\lstset{frame=single}
 \lstset{language=Scilab}
 
 \usepackage{float}
@@ -24,7 +24,7 @@
 \setlength{\parskip}{0.5em}
 
 \title{\textbf{TP3 “MODÉLISER L’ALÉA” \\ Page Rank}}
-\author{Clément Riu - Louis Trezzini}
+\author{Clément Riu -- Louis Trezzini}
 \date{\today}
 
 \newcommand{\E}{\mathbb{E}}
@@ -60,8 +60,114 @@ Le vecteur $z$ est appelé vecteur de téléportation pour car lorsque la chaîn
 On peut alors décomposer le calcul comme suit :
 
 \begin{align*}
-	P^T \cdot x &= \alpha P_{ss}^T \cdot x + \alpha \left( \left(d - e\right) \cdot z \right)^T \cdot x + (e \cdot z)^T \cdot x \\
-		P^T \cdot x &= \alpha P_{ss}^T \cdot x + \alpha z^T \cdot (d - e)^T \cdot x + z^T \cdot e^T \cdot x \\
+P^T x
+&= (\alpha P_{ss} + \alpha ((d - e) z + ez)^T x \\
+&= \alpha P_{ss}^T x + \alpha z^T (d - e)^T x + z^T e^T x \\
+&= \alpha P_{ss}^T x + z^T (\alpha (d - e) + e)^T x \\
+&= \alpha P_{ss}^T x + z^T w x \\
 \end{align*}
+
+Avec $w = (\alpha (d - e) + e)^T$. Le caractère creux des opérations est conservé.
+
+\paragraph*{Question 4.}
+~
+\begin{lstlisting}
+
+\end{lstlisting}
+% dessiner le graphe
+
+\paragraph*{Question 5.}
+~
+\begin{lstlisting}
+function [pi]=pi_iterative(P)
+  p = ones(n, 1);
+  while %t
+    pn = P' * p;
+    if norm(pn - p, %inf) < 10 * %eps then break;end
+    p = pn;
+  end
+  pi = p';
+  pi = pi / sum(pi);
+endfunction
+\end{lstlisting}
+
+On trouve $\pi = $.
+
+\paragraph*{Question 6.}
+~
+\begin{lstlisting}
+function [pi]=pi_iterative_sparse(Pss, d, z, alpha)
+  p = ones(n, 1);
+  while %t
+    w = (alpha * (d - ones(n, 1)) + ones(n, 1))';
+    pn = alpha * Pss' * p + z' * (w * p);
+    if norm(pn - p, %inf) < 10 * %eps then break; end
+    p = pn;
+  end
+  pi = p';
+  pi = pi / sum(pi);
+endfunction
+\end{lstlisting}
+
+On trouve de même $\pi = $.
+
+\paragraph*{Question 7.}
+%TODO
+
+\paragraph*{Question 8.}
+~
+\begin{lstlisting}
+function cerg=ergodique_markov_T(T,P)
+  Pk = eye(n,n);
+  couts = r((1:n)');
+  cerg = couts;
+  for i = 1:T
+    Pk = P * Pk;
+    cerg = cerg + Pk * couts;
+  end
+  cerg = cerg / T;
+endfunction
+\end{lstlisting}
+
+On trouve, pour T = 100 000.
+
+\begin{lstlisting}
+function [pi]=pi_iterative_sparse(Pss, d, z, alpha)
+  p = ones(n, 1);
+  while %t
+    w = (alpha * (d - ones(n, 1)) + ones(n, 1))';
+    pn = alpha * Pss' * p + z' * (w * p);
+    if norm(pn - p, %inf) < 10 * %eps then break; end
+    p = pn;
+  end
+  pi = p';
+  pi = pi / sum(pi);
+endfunction
+\end{lstlisting}
+
+On trouve 6.779941, soit un écart de \%.
+
+\paragraph*{Question 9.}
+%TODO
+
+\paragraph*{Question 10.}
+On suppose que $w$ est un point fixe de $w \mapsto \alpha P_1 w + b$. $w$ vérifie donc $w = \alpha P_1 w + R$, en remarquant que $b = R$.
+
+On a donc :
+\begin{align*}
+    w + c e &= \alpha P_1 w + R + (1 - \alpha) z w e\\
+    &= (\alpha P_1 + (1 - \alpha) e z)w + R \\
+    &= P w + R
+\end{align*}
+
+Car $zw$ est un scalaire donc commute avec $e$.
+
+\paragraph*{Question 11.}
+On montre que l'opérateur $w \mapsto \alpha P_1 w + b$ est contractant. En effet, la norme triple d'une matrice stochastique vaut 1, et on a pris $\alpha = 0.8$.
+
+Ainsi, en vertu du théorème de point fixe de Picard, cet opérateur possède un unique point fixe, et il peut être calculé par itérés.
+
+\paragraph*{Question 12.}
+%TODO
 
 \end{document}
