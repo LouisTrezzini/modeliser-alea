@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
 \usepackage[T1]{fontenc}
-\usepackage[margin=2cm]{geometry}
+\usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -23,7 +23,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
 
-\title{\textbf{TP3 “MODÉLISER L’ALÉA” \\ Page Rank}}
+\title{\vspace{-3em}\textbf{TP3 “MODÉLISER L’ALÉA” \\ Page Rank}}
 \author{Clément Riu -- Louis Trezzini}
 \date{\today}
 
@@ -91,7 +91,7 @@ function [pi]=pi_iterative(P)
 endfunction
 \end{lstlisting}
 
-On trouve $\pi = $.
+On trouve $\pi$ et on vérifie que $\pi^T$ est bien vecteur propre de $P^T$.
 
 \paragraph*{Question 6.}
 ~
@@ -109,7 +109,7 @@ function [pi]=pi_iterative_sparse(Pss, d, z, alpha)
 endfunction
 \end{lstlisting}
 
-On trouve de même $\pi = $.
+On trouve de même $\pi$.
 
 \paragraph*{Question 7.}
 %TODO
@@ -129,23 +129,17 @@ function cerg=ergodique_markov_T(T,P)
 endfunction
 \end{lstlisting}
 
-On trouve, pour T = 100 000.
+On trouve, pour T = 100 000, $\begin{pmatrix} 6.7799461 \\ 6.7799801 \\ 6.780027 \\ 6.7801198 \end{pmatrix}$.
 
 \begin{lstlisting}
-function [pi]=pi_iterative_sparse(Pss, d, z, alpha)
-  p = ones(n, 1);
-  while %t
-    w = (alpha * (d - ones(n, 1)) + ones(n, 1))';
-    pn = alpha * Pss' * p + z' * (w * p);
-    if norm(pn - p, %inf) < 10 * %eps then break; end
-    p = pn;
-  end
-  pi = p';
-  pi = pi / sum(pi);
-endfunction
+    function [cerg,pi]=ergodique_markov(P)
+      pi = pi_iterative(P);
+      couts = r((1:n)');
+      cerg = pi * couts;
+    endfunction
 \end{lstlisting}
 
-On trouve 6.779941, soit un écart de \%.
+On trouve 6.779941, soit un écart relatif d'au plus $4 \times 10^{-6}$.
 
 \paragraph*{Question 9.}
 %TODO

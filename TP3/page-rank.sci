@@ -28,24 +28,25 @@ Adj=grand(n,n,'bin',1,0.2);
 // z: vecteur de teleportation
 // d: vecteur vaut 1 si le degré vaut zero et 0 sinon
 
-function [P,Pss,Pprim,d,z,alpha]=google(Adj) // TODO
+function [P,Pss,Pprim,d,z,alpha]=google(Adj)
     z = grand(1, n, 'unf', 0, 1);
-    z = z / sum(z);
+    z = z ./ sum(z);
 
-    deg = sum(Adj,'c');
-    d = double(deg == 0);
+    d0 = sum(Adj, 'c');
+    d1 = double(d0 == 0); // d à remplacer à la fin.
+    d2 = find(d1 == 1);
+    d3 = zeros(n, 1);
+    d3(d2) = %inf;
+    d4 = sum(d1);
 
-    N = deg;
-    K = find(N == 0);
-    N(K) = %inf;
-
-    Pss = Adj ./ (N * ones(1, n));
+    Pss = Adj ./ ((d0 + d3) * ones(1, n));
 
     Pprim = Pss;
-    Pprim(K, :) = ones(size(K, '*'), 1) * z;
 
+    Pprim(d2, :) = ones(d4, 1) * z;
     alpha = 0.8;
-    P = alpha * Pprim + (1 - alpha) * ones(n, 1) * z;
+    P = alpha * Pprim + (1 - alpha) * (ones(n, 1) * z);
+    d = d1;
 endfunction
 
 [P,Pss,Pprim,d,z,alpha]=google(Adj);
@@ -88,6 +89,7 @@ function [pi]=pi_iterative(P)
 endfunction
 
 pi = pi_iterative(P);
+disp(pi);
 disp(clean(pi * P - pi));
 
 disp("== Question 6 ==");
@@ -141,7 +143,6 @@ for k = 1:ncont
     Adjc=Adj;
     Adjc(1:2, m + 1:$) = [control1 ; control2];
     [P,Pss,d,z,alpha] = google(Adjc);
-    // pi = pi_iterative_sparse(Pss, d, z, alpha);
     pi = pi_iterative(P);
     cost = sum(pi(1:m));
     if cost > costopt then
@@ -154,9 +155,7 @@ for k = 1:ncont
 end
 
 // La matrice d'adjacence du graphe apr�s optimisation
-/*xset('window',1);show_adj(Adjc,300*int(pi));*/
-
-// ---- FIXME
+// xset('window',1);show_adj(Adjc,300*int(pi));
 
 disp("===== Partie 4 =====");
 
@@ -272,7 +271,7 @@ c = (1-alpha)*z*w;
 // (w,c) solution du pb ergodique ?
 
 disp("w + c - (P * w + sum(P .* Rm))");
-disp(w + c - (P * w + sum(P .* Rm,'c')));
+disp(clean(w + c - (P * w + sum(P .* Rm,'c'))));
 
 // Maintenant on peut utiliser une méthode itérative
 
@@ -295,4 +294,6 @@ c = (1 - alpha) * z * w
 // (w,c) solution du pb ergodique ?
 
 disp("w + c - (P * w + sum(P .* Rm))");
-disp(w + c - (P * w + sum(P .* Rm,'c')));
+disp(clean(w + c - (P * w + sum(P .* Rm,'c'))));
+
+disp("== Question 12 ==");
