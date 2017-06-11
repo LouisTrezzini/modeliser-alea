@@ -67,9 +67,9 @@ disp(clean(y1 - y2));
 disp("== Question 4 ==");
 
 // pi^T est un vecteur propre de P^T associé à la valeur propre 1
-[R, diagevals]=spec(P')
-index = find(abs(diag(diagevals - 1)) < 1.e-10) // indice dans la liste R des vecteurs propres associés à la valeur propre 1.
-pi = real(R(:, index))'
+[R, diagevals]=spec(P');
+index = find(abs(diag(diagevals - 1)) < 1.e-10); // indice dans la liste R des vecteurs propres associés à la valeur propre 1.
+pi = real(R(:, index))';
 pi = pi / sum(pi);
 
 scf(2);
