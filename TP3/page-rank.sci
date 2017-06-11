@@ -19,7 +19,8 @@ function show_adj(Adj,diameters)
 endfunction
 
 Adj=grand(n,n,'bin',1,0.2);
-// show_adj(Adj);
+scf(1);
+show_adj(Adj);
 
 // Construction de la matrice de transition P
 // associée à une matrice d'adjacence.
@@ -63,17 +64,16 @@ y2 = alpha * Pss' * x + z' * (w * x);
 
 disp(clean(y1 - y2));
 
-disp("== Question 4 == FIXME");
+disp("== Question 4 ==");
 
 // pi^T est un vecteur propre de P^T associé à la valeur propre 1
-[R, diagevals]=spec(P');
-I = find(abs(diag(diagevals) - 1) < 1.e-7);
-pi = real(R(:, I))';
+[R, diagevals]=spec(P')
+index = find(abs(diag(diagevals - 1)) < 1.e-10) // indice dans la liste R des vecteurs propres associés à la valeur propre 1.
+pi = real(R(:, index))'
 pi = pi / sum(pi);
 
-disp(clean(pi * P - pi));
-
-// xbasc(); show_adj(Adj, int(300 * pi));
+scf(2);
+show_adj(Adj, int(300 * pi));
 
 disp("== Question 5 ==");
 
@@ -111,51 +111,37 @@ disp(clean(pi * P - pi));
 
 disp("===== Partie 3 =====");
 
-disp("== Question 7 == TODO");
+disp("== Question 7 ==");
 
+p=2;
 m = n / 2;
 
-// TODO
+direction_matrix = repmat([0;1], [2**(m-1), 1]);
+for k = 1 : m - 1
+  val = repmat(cat(1, zeros(2**k,1), ones(2**k,1)), [2**(m-k-1), 1]);
+  direction_matrix = cat(2, val, direction_matrix);
+end
 
-function controls=get_control(n)
-  if n == 1 then
-      controls = [0;1];
-  else
-    A = get_control(n - 1);
-    controls = [zeros(size(A,'r'),1),A;ones(size(A,'r'),1),A];
-  end
-endfunction
+p_rank = -%inf;
 
-controls = get_control(m);
-// 2^5 controles
-ncont = size(controls,'r');
-
-// On suppose que l'on peut changer les liens sortants des
-// deux premieres pages
-
-costopt = -%inf;
-kopt = [];
-
-for k = 1:ncont
-  for j = 1:ncont
-    control1 = controls(k,:);
-    control2 = controls(j,:);
-    Adjc=Adj;
-    Adjc(1:2, m + 1:$) = [control1 ; control2];
-    [P,Pss,d,z,alpha] = google(Adjc);
-    pi = pi_iterative(P);
-    cost = sum(pi(1:m));
-    if cost > costopt then
-        Adjopt=Adjc;
-        piopt=pi;
-        costopt = cost;
-        kopt = [k, j];
+// Valable que pour p = 2
+for p1 = 1 : 2**m
+  for p2 = 1 : 2**m
+    Adj_temp = Adj;
+    Adj_temp(1:2,m+1:$) = [direction_matrix(p1, :); direction_matrix(p2, :)];
+    [P_temp,Pss_temp,Pprim_temp,d_temp,z_temp,alpha_temp]=google(Adj_temp);
+    pi_temp = pi_iterative_sparse(Pss_temp, d_temp, z_temp, alpha_temp);
+    p_rank_temp = sum(pi_temp(1:m));
+    if p_rank_temp > p_rank
+      Adj_opt = Adj_temp;
+      pi_opt = pi_temp;
+      p_rank = p_rank_temp;
     end
   end
 end
 
-// La matrice d'adjacence du graphe apr�s optimisation
-// xset('window',1);show_adj(Adjc,300*int(pi));
+scf(3);
+show_adj(Adj_opt,300*int(pi_opt));
 
 disp("===== Partie 4 =====");
 
