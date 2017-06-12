@@ -73,7 +73,10 @@ pi = real(R(:, index))';
 pi = pi / sum(pi);
 
 scf(2);
-show_adj(Adj, int(300 * pi));
+show_adj(Adj_opt,300*int(pi_opt));
+
+disp(pi);
+disp(clean(pi * P - pi));
 
 disp("== Question 5 ==");
 

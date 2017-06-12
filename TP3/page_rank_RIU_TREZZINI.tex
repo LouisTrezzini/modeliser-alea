@@ -41,13 +41,21 @@
 
 \section{Une chaîne de Markov}
 
-\paragraph*{Question 1.} La chaîne de Markov $(X_n)_{n \in \N}$ de matrice de transition $P$ va suivre le graphe des pages web, et lorsqu'elle arrive sur une page qui ne redirige vers aucune autre, elle se téléporte sur une autre page quelconque. De plus, il existe une probabilité non-nulle (car $\forall i \in \N, \ z_i > 0$) que la chaîne se téléporte même si la page possède des liens sortant.
+\paragraph*{Question 1.}
+La chaîne de Markov $(X_n)_{n \in \N}$ de matrice de transition $P$ va suivre le graphe des pages web, et lorsqu'elle arrive sur une page qui ne redirige vers aucune autre, elle se téléporte sur une autre page quelconque. De plus, il existe une probabilité non-nulle (car $\forall i \in \N, \ z_i > 0$) que la chaîne se téléporte même si la page possède des liens sortant.
 
 Le vecteur $z$ est appelé vecteur de téléportation pour car lorsque la chaîne est sur une page $i$ il y a une probabilité proportionnelle à $z_j$ de passer directement à la page $j$.
 
 \section{Calcul du PageRank des états de la chaîne}
 
-\paragraph*{Question 2.} Grâce au vecteur de téléportation $z$, la chaîne de Markov $(X_n)_{n \in \N}$ est irréductible (encore une fois parce que $\forall i \in \N, \ z_i > 0$. De plus, ayant valeur dans un espace d'état fini, la chaîne de Markov est positive récurrente et il existe une unique probabilité invariante $\pi$.
+\paragraph*{Question 2.}
+Grâce au vecteur de téléportation $z$, la chaîne de Markov $(X_n)_{n \in \N}$ est irréductible (encore une fois parce que $\forall i \in \N, \ z_i > 0$. De plus, ayant valeur dans un espace d'état fini, la chaîne de Markov est positive récurrente et il existe une unique probabilité invariante $\pi$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{q2.eps}
+    \caption{Graphe considéré.}
+\end{figure}
 
 \paragraph*{Question 3.} On a :
 
@@ -72,9 +80,21 @@ Avec $w = (\alpha (d - e) + e)^T$. Le caractère creux des opérations est conse
 \paragraph*{Question 4.}
 ~
 \begin{lstlisting}
-
+// pi^T est un vecteur propre de P^T associe a la valeur propre 1
+[R, diagevals]=spec(P');
+index = find(abs(diag(diagevals - 1)) < 1.e-10); // indices dans la liste R des vecteurs propres associes a la valeur propre 1
+pi = real(R(:, index))';
+pi = pi / sum(pi);
 \end{lstlisting}
 % dessiner le graphe
+
+On trouve $\pi$ et on vérifie que $\pi^T$ est bien vecteur propre de $P^T$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{q4.eps}
+    \caption{Graphe en tenant compte du PageRank pour choisir le diamètre du cercle représentant chaque noeud.}
+\end{figure}
 
 \paragraph*{Question 5.}
 ~
@@ -91,7 +111,7 @@ function [pi]=pi_iterative(P)
 endfunction
 \end{lstlisting}
 
-On trouve $\pi$ et on vérifie que $\pi^T$ est bien vecteur propre de $P^T$.
+On retrouve le $\pi$ de la question précédente et on vérifie de même que $\pi^T$ est bien vecteur propre de $P^T$.
 
 \paragraph*{Question 6.}
 ~
@@ -142,7 +162,7 @@ On trouve, pour T = 100 000, $\begin{pmatrix} 6.7799461 \\ 6.7799801 \\ 6.780027
 On trouve 6.779941, soit un écart relatif d'au plus $4 \times 10^{-6}$.
 
 \paragraph*{Question 9.}
-%TODO
+On vérifie bien toutes les relations présentées dans le sujet.
 
 \paragraph*{Question 10.}
 On suppose que $w$ est un point fixe de $w \mapsto \alpha P_1 w + b$. $w$ vérifie donc $w = \alpha P_1 w + R$, en remarquant que $b = R$.
@@ -160,8 +180,5 @@ Car $zw$ est un scalaire donc commute avec $e$.
 On montre que l'opérateur $w \mapsto \alpha P_1 w + b$ est contractant. En effet, la norme triple d'une matrice stochastique vaut 1, et on a pris $\alpha = 0.8$.
 
 Ainsi, en vertu du théorème de point fixe de Picard, cet opérateur possède un unique point fixe, et il peut être calculé par itérés.
-
-\paragraph*{Question 12.}
-%TODO
 
 \end{document}
