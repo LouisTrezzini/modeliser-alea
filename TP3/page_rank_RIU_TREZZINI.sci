@@ -57,6 +57,7 @@ disp(sum(P,'c'));
 
 disp("== Question 3 ==");
 
+
 w = (alpha * (d - ones(n, 1)) + ones(n, 1))';
 x = rand(n, 1)
 y1 = P' * x;
@@ -73,7 +74,7 @@ pi = real(R(:, index))';
 pi = pi / sum(pi);
 
 scf(2);
-show_adj(Adj_opt,300*int(pi_opt));
+show_adj(Adj,300*pi);
 
 disp(pi);
 disp(clean(pi * P - pi));
@@ -135,16 +136,18 @@ for p1 = 1 : 2**m
     [P_temp,Pss_temp,Pprim_temp,d_temp,z_temp,alpha_temp]=google(Adj_temp);
     pi_temp = pi_iterative_sparse(Pss_temp, d_temp, z_temp, alpha_temp);
     p_rank_temp = sum(pi_temp(1:m));
+    
     if p_rank_temp > p_rank
       Adj_opt = Adj_temp;
       pi_opt = pi_temp;
       p_rank = p_rank_temp;
     end
+
   end
 end
 
 scf(3);
-show_adj(Adj_opt,300*int(pi_opt));
+show_adj(Adj_opt,300*pi_opt);
 
 disp("===== Partie 4 =====");
 

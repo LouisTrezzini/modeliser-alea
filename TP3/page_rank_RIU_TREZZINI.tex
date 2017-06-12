@@ -92,7 +92,7 @@ On trouve $\pi$ et on vérifie que $\pi^T$ est bien vecteur propre de $P^T$.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{q4.eps}
+    \includegraphics[width=0.7\textwidth]{q4.eps}
     \caption{Graphe en tenant compte du PageRank pour choisir le diamètre du cercle représentant chaque noeud.}
 \end{figure}
 
@@ -132,7 +132,43 @@ endfunction
 On trouve de même $\pi$.
 
 \paragraph*{Question 7.}
-%TODO
+~
+\begin{lstlisting}
+p=2;
+m = n / 2;
+
+direction_matrix = repmat([0;1], [2**(m-1), 1]);
+for k = 1 : m - 1
+  val = repmat(cat(1, zeros(2**k,1), ones(2**k,1)), [2**(m-k-1), 1]);
+  direction_matrix = cat(2, val, direction_matrix);
+end
+
+p_rank = -%inf;
+
+// Valable que pour p = 2
+for p1 = 1 : 2**m
+  for p2 = 1 : 2**m
+    Adj_temp = Adj;
+    Adj_temp(1:2,m+1:$) = [direction_matrix(p1, :); direction_matrix(p2, :)];
+    [P_temp,Pss_temp,Pprim_temp,d_temp,z_temp,alpha_temp]=google(Adj_temp);
+    pi_temp = pi_iterative_sparse(Pss_temp, d_temp, z_temp, alpha_temp);
+    p_rank_temp = sum(pi_temp(1:m));
+    
+    if p_rank_temp > p_rank
+      Adj_opt = Adj_temp;
+      pi_opt = pi_temp;
+      p_rank = p_rank_temp;
+    end
+
+  end
+end
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{q7.eps}
+    \caption{Graphe optimisé.}
+\end{figure}
 
 \paragraph*{Question 8.}
 ~
